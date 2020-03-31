@@ -1,0 +1,11 @@
+diff --git a/node_modules/custom-event/index.js b/node_modules/custom-event/index.js
+index ffe1a2e..ba4b35b 100644
+--- a/node_modules/custom-event/index.js
++++ b/node_modules/custom-event/index.js
+@@ -1,5 +1,5 @@
+ 
+-var NativeCustomEvent = global.CustomEvent;
++var NativeCustomEvent = window.globalThis.CustomEvent;
+ 
+ function useNative () {
+   try {

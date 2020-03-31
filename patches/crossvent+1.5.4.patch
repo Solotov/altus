@@ -1,0 +1,32 @@
+diff --git a/node_modules/crossvent/src/crossvent.js b/node_modules/crossvent/src/crossvent.js
+index cd282e9..d8a6ef6 100644
+--- a/node_modules/crossvent/src/crossvent.js
++++ b/node_modules/crossvent/src/crossvent.js
+@@ -2,12 +2,12 @@
+ 
+ var customEvent = require('custom-event');
+ var eventmap = require('./eventmap');
+-var doc = global.document;
++var doc = window.globalThis.document;
+ var addEvent = addEventEasy;
+ var removeEvent = removeEventEasy;
+ var hardCache = [];
+ 
+-if (!global.addEventListener) {
++if (!window.globalThis.addEventListener) {
+   addEvent = addEventHard;
+   removeEvent = removeEventHard;
+ }
+diff --git a/node_modules/crossvent/src/eventmap.js b/node_modules/crossvent/src/eventmap.js
+index d22c769..ef0a7b9 100644
+--- a/node_modules/crossvent/src/eventmap.js
++++ b/node_modules/crossvent/src/eventmap.js
+@@ -4,7 +4,7 @@ var eventmap = [];
+ var eventname = '';
+ var ron = /^on/;
+ 
+-for (eventname in global) {
++for (eventname in window.globalThis) {
+   if (ron.test(eventname)) {
+     eventmap.push(eventname.slice(2));
+   }

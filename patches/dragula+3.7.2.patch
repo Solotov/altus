@@ -1,0 +1,27 @@
+diff --git a/node_modules/dragula/dragula.js b/node_modules/dragula/dragula.js
+index 4f73231..6d6a579 100644
+--- a/node_modules/dragula/dragula.js
++++ b/node_modules/dragula/dragula.js
+@@ -508,9 +508,9 @@ function touchy (el, op, type, fn) {
+     mousedown: 'MSPointerDown',
+     mousemove: 'MSPointerMove'
+   };
+-  if (global.navigator.pointerEnabled) {
++  if (window.globalThis.navigator.pointerEnabled) {
+     crossvent[op](el, pointers[type], fn);
+-  } else if (global.navigator.msPointerEnabled) {
++  } else if (window.globalThis.navigator.msPointerEnabled) {
+     crossvent[op](el, microsoft[type], fn);
+   } else {
+     crossvent[op](el, touch[type], fn);
+@@ -537,8 +537,8 @@ function getOffset (el) {
+ }
+ 
+ function getScroll (scrollProp, offsetProp) {
+-  if (typeof global[offsetProp] !== 'undefined') {
+-    return global[offsetProp];
++  if (typeof window.globalThis[offsetProp] !== 'undefined') {
++    return window.globalThis[offsetProp];
+   }
+   if (documentElement.clientHeight) {
+     return documentElement[scrollProp];
