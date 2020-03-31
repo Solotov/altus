@@ -1,3 +1,30 @@
 @import './utils/variables';
 @import './base/reset';
+
+@font-face {
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 100 700;
+    font-display: swap;
+    src: url('../fonts/ManropeGX.ttf') format('truetype');
+}
+
 @import './base/typography';
+@import './components/button';
+@import './components/titlebar';
+@import './components/tabbar';
+@import './components/tab';
+@import './components/tabcontent';
+@import './components/welcome';
+@import './components/welcomepagesection';
+@import './components/welcomelinksection';
+@import './components/scrollbar';
+@import './vendors/dragula';
+
+#root,
+#app,
+.tab-layout {
+    height: 100%;
+    background: #1b1d20;
+    color: #fff;
+}
