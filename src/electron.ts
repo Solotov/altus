@@ -1,8 +1,6 @@
-import { app, BrowserWindow, Menu } from "electron";
+import { app, BrowserWindow, Menu, ipcMain, shell } from "electron";
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: any;
-import path from "path";
-import os from "os";
 import mainMenu from "./utils/generateMenu";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -22,10 +20,10 @@ const createMainWindow = (): void => {
     minHeight: 600,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
-      webviewTag: true
+      webviewTag: true,
     },
     frame: false,
-    icon: "./build/icon.ico"
+    icon: "./build/icon.ico",
   });
 
   // and load the index.html of the app.
@@ -33,15 +31,6 @@ const createMainWindow = (): void => {
 
   // Set main menu
   Menu.setApplicationMenu(Menu.buildFromTemplate(mainMenu));
-
-  if (!app.isPackaged) {
-    BrowserWindow.addDevToolsExtension(
-      path.join(
-        os.homedir(),
-        "AppData\\Local\\Google\\Chrome\\User Data\\Profile 1\\Extensions\\fmkadmapgofadopljbjfkapdkoienihi\\4.5.0_0"
-      )
-    );
-  }
 };
 
 // This method will be called when Electron has finished
@@ -49,6 +38,11 @@ const createMainWindow = (): void => {
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
   createMainWindow();
+
+  // Open external links in browser
+  ipcMain.on("open-link", (e, link) => {
+    shell.openExternal(link);
+  });
 });
 
 // Quit when all windows are closed.
