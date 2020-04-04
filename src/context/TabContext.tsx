@@ -9,7 +9,10 @@ export const TabProvider = ({
 }): ReactElement => {
   const initialTabState: TabState = {
     tabs: [],
-    activeTabId: ""
+    activeTabId: "",
+    welcomePageHidden: false,
+    tabModalOpen: false,
+    editTab: null
   };
 
   const [tabState, setTabState] = useState(initialTabState);

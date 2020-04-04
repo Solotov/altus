@@ -10,8 +10,18 @@ import userOutlined from "@iconify/icons-ant-design/user-outlined";
 import baselineSettings from "@iconify/icons-ic/baseline-settings";
 import roundClose from "@iconify/icons-ic/round-close";
 
-const Tab = ({ title, icon, id }: TabObject): ReactElement => {
-  const { tabState, setTabState } = useContext(TabContext);
+const Tab = ({
+  name,
+  icon,
+  id,
+  theme,
+  notifications,
+  sound
+}: TabObject): ReactElement => {
+  const {
+    tabState,
+    setTabState
+  }: { tabState: TabState; setTabState: Function } = useContext(TabContext);
 
   const isActive = tabState.activeTabId === id ? true : false;
 
@@ -29,9 +39,28 @@ const Tab = ({ title, icon, id }: TabObject): ReactElement => {
           <Icon icon={userOutlined} width="1.1em" />
         )}
       </div>
-      <div className="title">{title}</div>
+      <div className="title">{name}</div>
       <div className="controls">
-        <div className="settings">
+        <div
+          className="settings"
+          onClick={(e): void => {
+            e.stopPropagation();
+            setTabState((prev: TabState) => {
+              return {
+                ...prev,
+                tabModalOpen: true,
+                editTab: {
+                  name,
+                  id,
+                  theme,
+                  notifications,
+                  sound,
+                  ...(icon && { icon })
+                }
+              };
+            });
+          }}
+        >
           <Icon icon={baselineSettings} width="1.1em" />
         </div>
         <div

@@ -13,9 +13,12 @@ declare module "*.png" {
 }
 
 interface TabObject {
-  title: string;
+  name: string;
   icon?: string;
   id: string;
+  theme: string;
+  notifications: boolean;
+  sound: boolean;
 }
 
 interface TabContext {
@@ -26,4 +29,7 @@ interface TabContext {
 interface TabState {
   tabs: TabObject[] | [];
   activeTabId: string | "";
+  welcomePageHidden: boolean;
+  tabModalOpen: boolean;
+  editTab: TabObject | null;
 }

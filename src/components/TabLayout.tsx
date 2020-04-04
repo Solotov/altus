@@ -6,9 +6,13 @@ import removeTab from "../utils/removeTab";
 import useHotkeys from "../utils/useHotkeys";
 import goToNextTabRight from "../utils/goToNextTabRight";
 import goToNextTabLeft from "../utils/goToNextTabLeft";
+import TabModal from "./TabModal";
 
 const TabLayout = (): ReactElement => {
-  const { tabState, setTabState } = useContext(TabContext);
+  const {
+    tabState,
+    setTabState
+  }: { tabState: TabState; setTabState: Function } = useContext(TabContext);
 
   useEffect(() => {
     // Set initally active tab
@@ -56,6 +60,11 @@ const TabLayout = (): ReactElement => {
     >
       <TabBar></TabBar>
       <TabContent></TabContent>
+      <TabModal
+        isOpen={tabState.tabModalOpen}
+        tabStateHandler={setTabState}
+        {...(tabState.editTab && { editTab: tabState.editTab })}
+      ></TabModal>
     </div>
   );
 };

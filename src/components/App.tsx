@@ -1,4 +1,4 @@
-import React, { useEffect, ReactElement, useContext } from "react";
+import React, { ReactElement } from "react";
 import { TabProvider } from "../context/TabContext";
 import TabLayout from "./TabLayout";
 
