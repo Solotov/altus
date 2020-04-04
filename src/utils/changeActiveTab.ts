@@ -1,11 +1,12 @@
 const changeActiveTab = (
   id: string,
-  prevState: object,
+  prevState: TabState,
   stateHandler: Function
 ): void => {
   stateHandler({
     ...prevState,
-    activeTabId: id
+    activeTabId: id,
+    welcomePageHidden: true
   });
 };
 
