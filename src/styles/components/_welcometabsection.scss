@@ -1,0 +1,24 @@
+.tab-section {
+
+    &.is-flex {
+        max-width: min-content;
+        text-align: center;
+
+        .section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    .no-tabs {
+        padding: 0 1rem;
+
+        .button {
+            margin: auto;
+            background: linear-gradient(270deg, #09A5D7 0%, #2A71D1 100%);
+            color: #fff;
+            padding: 0.55rem 1.25rem;
+        }
+    }
+}
