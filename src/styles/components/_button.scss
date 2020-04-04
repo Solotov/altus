@@ -1,13 +1,14 @@
 .button {
     background: #FDFAFA;
     color: #000000;
-    padding: 0.55rem 0.85rem;
+    padding: 0.55rem 1rem;
     display: flex;
     align-items: center;
     border-radius: 0.15rem;
     box-sizing: border-box;
     user-select: none;
     cursor: pointer;
+    width: max-content;
 
     .icon {
         display: flex;
@@ -16,10 +17,17 @@
 
     .text {
         font-weight: 500;
-        line-height: 1.1rem;
+        line-height: 1.2rem;
+        font-size: 1rem;
     }
 
     &.fluid {
         width: 100%;
+    }
+
+    &:hover {
+        transition: 0.15s;
+        background: #1779e9;
+        color: #fff;
     }
 }

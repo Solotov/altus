@@ -11,13 +11,19 @@
 
 @import './base/typography';
 @import './components/button';
+@import './components/textbox';
+@import './components/toggle';
 @import './components/titlebar';
 @import './components/tabbar';
 @import './components/tab';
 @import './components/tabcontent';
+@import './components/tabmodal';
 @import './components/welcome';
 @import './components/welcomepagesection';
 @import './components/welcomelinksection';
+@import './components/welcometabsection';
+@import './components/welcomepagetab';
+@import './components/welcomesettingsection';
 @import './components/scrollbar';
 @import './vendors/dragula';
 
@@ -27,4 +33,8 @@
     height: 100%;
     background: #1b1d20;
     color: #fff;
+}
+
+body {
+    background: #1b1d20;
 }

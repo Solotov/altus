@@ -1,0 +1,31 @@
+.toggle {
+    background: #FFF;
+    width: 2.75rem;
+    height: 1.5rem;
+    border-radius: 1rem;
+    cursor: pointer;
+    position: relative;
+
+    &::after {
+        content: '';
+        width: 1.1rem;
+        height: 1.1rem;
+        border-radius: 100%;
+        background: linear-gradient(270deg, #09A5D7 0%, #2A71D1 100%);
+        position: absolute;
+        top: 50%;
+        left: 10%;
+        transform: translateY(-50%);
+    }
+
+    &.enabled {
+        background: linear-gradient(270deg, #09A5D7 0%, #2A71D1 100%);
+
+        &::after {
+            transition: .15s;
+            background: #fff;
+            left: auto;
+            right: 10%;
+        }
+    }
+}
