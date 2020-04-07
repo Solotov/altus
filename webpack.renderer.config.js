@@ -16,19 +16,13 @@ rules.push({
 });
 
 rules.push({
-  test: /\.(ttf|otf)$/,
+  test: /\.(png|jpg|gif|ttf)$/i,
   use: [{
-    loader: "url-loader",
+    loader: "file-loader",
     options: {
-      limit: 100000
-    }
-  }]
-}, {
-  test: /\.(png|jpg|gif)$/i,
-  use: [{
-    loader: "url-loader",
-    options: {
-      limit: 8192
+      name: '[name]-[hash].[ext]',
+      outputPath: 'static',
+      publicPath: '../static'
     }
   }]
 });
