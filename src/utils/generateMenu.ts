@@ -21,9 +21,37 @@ const mainMenu = [
       },
     ],
   },
+  {
+    label: "Window",
+    submenu: [
+      {
+        label: "Close Active Tab",
+        accelerator: "CmdOrCtrl+W",
+        click(): void {
+          BrowserWindow.getFocusedWindow().webContents.send("close-tab");
+        },
+      },
+      {
+        label: "Go to Next Tab",
+        accelerator: "CmdOrCtrl+Tab",
+        click(): void {
+          BrowserWindow.getFocusedWindow().webContents.send("goto-next-tab");
+        },
+      },
+      {
+        label: "Go to Previous Tab",
+        accelerator: "CmdOrCtrl+Shift+Tab",
+        click(): void {
+          BrowserWindow.getFocusedWindow().webContents.send(
+            "goto-previous-tab"
+          );
+        },
+      },
+    ],
+  },
 ];
 
-if (app.isPackaged) {
+if (!app.isPackaged) {
   mainMenu[0].submenu = [
     {
       label: "Open DevTools",
