@@ -3,7 +3,7 @@ declare const WHATSAPP_PRELOAD_WEBPACK_ENTRY: any;
 
 const WebView = ({
   id,
-  active
+  active,
 }: {
   id: string;
   active: boolean;
@@ -12,8 +12,12 @@ const WebView = ({
 
   useEffect(() => {
     if (wvRef.current) {
-      if ((wvRef as any).current.partition.length > 0) {
+      if ((wvRef as any).current.getAttribute("partition").length > 0) {
         (wvRef as any).current.src = "https://web.whatsapp.com";
+      }
+
+      if (active) {
+        (wvRef as any).current.focus();
       }
     }
   }, []);
@@ -30,7 +34,7 @@ const WebView = ({
       {...(id.length > 0
         ? {
             id: `webview-${id}`,
-            partition: `persist:${id}`
+            partition: `persist:${id}`,
           }
         : {})}
     ></webview>
