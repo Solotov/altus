@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useRef, useState } from "react";
+import React, { ReactElement, useEffect, useState, useContext } from "react";
 import ReactModal from "react-modal";
 import { Icon } from "@iconify/react";
 import roundClose from "@iconify/icons-ic/round-close";
@@ -7,11 +7,11 @@ import Toggle from "./Toggle";
 import Button from "./Button";
 import roundPlus from "@iconify/icons-ic/round-plus";
 import { v4 as uuid } from "uuid";
-import closeTabModal from "../utils/closeTabModal";
+import { TabContext } from "../context/TabContext";
+import useHotkeys from "../utils/useHotkeys";
 
 type TabModalProps = {
   isOpen: boolean;
-  tabStateHandler: Function;
   editTab?: TabObject;
 };
 
@@ -20,24 +20,22 @@ type ThemeOptionType = {
   value: string;
 };
 
-const TabModal = ({
-  isOpen,
-  tabStateHandler,
-  editTab
-}: TabModalProps): ReactElement => {
+const TabModal = ({ isOpen, editTab }: TabModalProps): ReactElement => {
+  const context = useContext(TabContext);
+
   const themeOptions = [
     { value: "default", label: "Default" },
-    { value: "dark", label: "Dark" }
+    { value: "dark", label: "Dark" },
   ];
 
   const values = {
     name: editTab !== undefined ? editTab.name : "",
     theme:
       editTab !== undefined
-        ? themeOptions.find(theme => theme.value === editTab.theme)
+        ? themeOptions.find((theme) => theme.value === editTab.theme)
         : themeOptions[0],
     notifications: editTab !== undefined ? editTab.notifications : true,
-    sound: editTab !== undefined ? editTab.sound : true
+    sound: editTab !== undefined ? editTab.sound : true,
   };
 
   const [tabName, setTabName] = useState(values.name);
@@ -54,23 +52,21 @@ const TabModal = ({
     setTabSound(values.sound);
   }, [values.name]);
 
+  const closeTabModal = (): void =>
+    context.dispatch({ type: "CLOSE_TAB_MODAL" });
+
   const addTab = (): void => {
     const newTab: TabObject = {
       name: tabName || "New Tab",
       id: uuid(),
       theme: tabTheme.value,
       notifications: tabNotifications,
-      sound: tabSound
+      sound: tabSound,
     };
 
-    tabStateHandler((prev: TabState) => {
-      return {
-        ...prev,
-        tabs: [...prev.tabs, newTab],
-        activeTabId: newTab.id,
-        welcomePageHidden: true
-      };
-    });
+    context.dispatch({ type: "ADD_TAB", payload: newTab });
+    context.dispatch({ type: "CHANGE_ACTIVE_TAB", payload: newTab.id });
+    context.dispatch({ type: "HIDE_WELCOME_PAGE" });
   };
 
   const editExistingTab = (): void => {
@@ -79,19 +75,17 @@ const TabModal = ({
       id: editTab.id,
       theme: tabTheme.value,
       notifications: tabNotifications,
-      sound: tabSound
+      sound: tabSound,
     };
 
-    tabStateHandler((prev: TabState) => {
-      return {
-        ...prev,
-        tabs: [
-          ...(prev as any).tabs.map((tab: TabObject) =>
-            tab.id === editedTab.id ? editedTab : tab
-          )
-        ]
-      };
-    });
+    context.dispatch({ type: "EDIT_TAB", payload: editedTab });
+  };
+
+  const resetValues = (): void => {
+    setTabName("");
+    setTabTheme(themeOptions[0]);
+    setTabNotifications(true);
+    setTabSound(true);
   };
 
   const modalActionHandler = (): void => {
@@ -101,8 +95,17 @@ const TabModal = ({
       addTab();
     }
 
-    closeTabModal(tabStateHandler);
+    resetValues();
+    closeTabModal();
   };
+
+  useHotkeys(
+    "enter",
+    () => {
+      if (context.tabModalOpen) modalActionHandler();
+    },
+    [tabName]
+  );
 
   ReactModal.setAppElement("#root");
 
@@ -111,16 +114,13 @@ const TabModal = ({
       isOpen={isOpen}
       shouldCloseOnOverlayClick={true}
       shouldCloseOnEsc={true}
-      onRequestClose={(): void => closeTabModal(tabStateHandler)}
-      className="tab-modal"
-      overlayClassName="tab-modal-overlay"
+      onRequestClose={(): void => closeTabModal()}
+      className="modal tab-modal"
+      overlayClassName="modal-overlay tab-modal-overlay"
     >
       <div className="header">
         <div className="title">Tab Preferences</div>
-        <div
-          className="close-button"
-          onClick={(): void => closeTabModal(tabStateHandler)}
-        >
+        <div className="close-button" onClick={(): void => closeTabModal()}>
           <Icon icon={roundClose} height="1.65rem" />
         </div>
       </div>
@@ -151,14 +151,14 @@ const TabModal = ({
           <p className="label">Enable Notifications</p>
           <Toggle
             value={tabNotifications}
-            onClick={(): void => setTabNotifications(prev => !prev)}
+            onClick={(): void => setTabNotifications((prev) => !prev)}
           />
         </div>
         <div className="setting inline">
           <p className="label">Enable Sound</p>
           <Toggle
             value={tabSound}
-            onClick={(): void => setTabSound(prev => !prev)}
+            onClick={(): void => setTabSound((prev) => !prev)}
           />
         </div>
       </div>

@@ -1,72 +1,89 @@
-import React, { ReactElement, useContext, useEffect } from "react";
+import React, { ReactElement } from "react";
+import { ipcRenderer } from "electron";
 import TabBar from "./TabBar";
 import TabContent from "./TabContent";
-import { TabContext } from "../context/TabContext";
-import removeTab from "../utils/removeTab";
-import useHotkeys from "../utils/useHotkeys";
-import goToNextTabRight from "../utils/goToNextTabRight";
-import goToNextTabLeft from "../utils/goToNextTabLeft";
 import TabModal from "./TabModal";
+import SettingsModal from "./SettingsModal";
+import { TabConsumer } from "../context/TabContext";
+import getNextTabId from "../utils/getNextTabId";
 
-const TabLayout = (): ReactElement => {
-  const {
-    tabState,
-    setTabState
-  }: { tabState: TabState; setTabState: Function } = useContext(TabContext);
+interface TabLayoutProps {
+  context: any;
+}
 
-  useEffect(() => {
-    // Set initally active tab
-    if (tabState.tabs.length > 0) {
-      setTabState((prevState: TabState) => {
-        return {
-          ...prevState,
-          activeTabId: prevState.tabs[0].id
-        };
-      });
+class BaseTabLayout extends React.Component<TabLayoutProps> {
+  componentDidUpdate(): void {
+    const { context } = this.props;
+    ipcRenderer.removeAllListeners("close-tab");
+    ipcRenderer.removeAllListeners("goto-next-tab");
+    ipcRenderer.removeAllListeners("goto-previous-tab");
+
+    function closeTabHandler(): void {
+      if (context.tabs.length > 0) {
+        context.dispatch({
+          type: "CHANGE_ACTIVE_TAB",
+          payload: getNextTabId(context.tabs, context.activeTabId, true),
+        });
+        context.dispatch({ type: "REMOVE_TAB", payload: context.activeTabId });
+        context.dispatch({ type: "CHECK_TABS_AND_TOGGLE_WELCOME_PAGE" });
+      }
     }
-  }, []);
 
-  // Close Active Tab
-  useHotkeys(
-    "ctrl+w, command+w",
-    () => {
-      removeTab(tabState.activeTabId, tabState, setTabState, true);
-    },
-    [tabState]
-  );
+    function goToNextTabHandler(): void {
+      if (context.tabs.length > 0) {
+        context.dispatch({
+          type: "CHANGE_ACTIVE_TAB",
+          payload: getNextTabId(context.tabs, context.activeTabId, false),
+        });
+      }
+    }
 
-  // Go to next tab on the right
-  useHotkeys(
-    "ctrl+tab, command+tab, ctrl+pagedown, command+pagedown",
-    () => {
-      goToNextTabRight(tabState.activeTabId, tabState, setTabState);
-    },
-    [tabState]
-  );
+    function goToPreviousTabHandler(): void {
+      if (context.tabs.length > 0) {
+        context.dispatch({
+          type: "CHANGE_ACTIVE_TAB",
+          payload: getNextTabId(context.tabs, context.activeTabId, true),
+        });
+      }
+    }
 
-  // Go to next tab on the left
-  useHotkeys(
-    "ctrl+shift+tab, command+shift+tab, ctrl+pageup, command+pageup",
-    () => {
-      goToNextTabLeft(tabState.activeTabId, tabState, setTabState);
-    },
-    [tabState]
-  );
+    // Remove any active listeners
+    // Initially add the listener
+    ipcRenderer.on("close-tab", closeTabHandler);
+    ipcRenderer.on("goto-next-tab", goToNextTabHandler);
+    ipcRenderer.on("goto-previous-tab", goToPreviousTabHandler);
+  }
 
-  return (
-    <div
-      className="tab-layout"
-      style={{ display: "flex", flexDirection: "column" }}
-    >
-      <TabBar></TabBar>
-      <TabContent></TabContent>
-      <TabModal
-        isOpen={tabState.tabModalOpen}
-        tabStateHandler={setTabState}
-        {...(tabState.editTab && { editTab: tabState.editTab })}
-      ></TabModal>
-    </div>
-  );
-};
+  componentWillUnmount(): void {
+    // Remove all listeners when component is about to unmount
+    ipcRenderer.removeAllListeners("close-tab");
+    ipcRenderer.removeAllListeners("goto-next-tab");
+    ipcRenderer.removeAllListeners("goto-previous-tab");
+  }
+
+  render(): ReactElement {
+    const { context } = this.props;
+    return (
+      <div
+        className="tab-layout"
+        style={{ display: "flex", flexDirection: "column" }}
+      >
+        <TabBar></TabBar>
+        <TabContent></TabContent>
+        <TabModal
+          isOpen={context.tabModalOpen}
+          {...(context.editTab && { editTab: context.editTab })}
+        ></TabModal>
+        <SettingsModal isOpen={context.settingsModalOpen} />
+      </div>
+    );
+  }
+}
+
+const TabLayout = (): ReactElement => (
+  <TabConsumer>
+    {(context): ReactElement => <BaseTabLayout context={context} />}
+  </TabConsumer>
+);
 
 export default TabLayout;

@@ -1,14 +1,12 @@
 import React, { ReactElement, useContext } from "react";
 // Tab context
 import { TabContext } from "../context/TabContext";
-// Tab utility functions
-import changeActiveTab from "../utils/changeActiveTab";
-import removeTab from "../utils/removeTab";
 // Icons
 import { Icon } from "@iconify/react";
 import userOutlined from "@iconify/icons-ant-design/user-outlined";
 import baselineSettings from "@iconify/icons-ic/baseline-settings";
 import roundClose from "@iconify/icons-ic/round-close";
+import getNextTabId from "../utils/getNextTabId";
 
 const Tab = ({
   name,
@@ -16,21 +14,32 @@ const Tab = ({
   id,
   theme,
   notifications,
-  sound
+  sound,
 }: TabObject): ReactElement => {
-  const {
-    tabState,
-    setTabState
-  }: { tabState: TabState; setTabState: Function } = useContext(TabContext);
-
-  const isActive = tabState.activeTabId === id ? true : false;
+  const context = useContext(TabContext);
+  const currentTab = {
+    name,
+    ...(icon && { icon }),
+    id,
+    theme,
+    notifications,
+    sound,
+  };
+  const isActive = context.activeTabId === id ? true : false;
+  const nextTabId = getNextTabId(
+    context.tabs,
+    currentTab.id,
+    context.tabs.indexOf(currentTab) === context.tabs.length - 1 ? false : true
+  );
 
   return (
     <div
       id={id.toString()}
       className="tab"
       data-active={isActive}
-      onClick={(): void => changeActiveTab(id, tabState, setTabState)}
+      onClick={(): void =>
+        context.dispatch({ type: "CHANGE_ACTIVE_TAB", payload: id })
+      }
     >
       <div className="icon">
         {icon ? (
@@ -45,19 +54,9 @@ const Tab = ({
           className="settings"
           onClick={(e): void => {
             e.stopPropagation();
-            setTabState((prev: TabState) => {
-              return {
-                ...prev,
-                tabModalOpen: true,
-                editTab: {
-                  name,
-                  id,
-                  theme,
-                  notifications,
-                  sound,
-                  ...(icon && { icon })
-                }
-              };
+            context.dispatch({
+              type: "SET_TAB_TO_EDIT",
+              payload: currentTab,
             });
           }}
         >
@@ -67,7 +66,12 @@ const Tab = ({
           className="close"
           onClick={(e): void => {
             e.stopPropagation();
-            removeTab(id, tabState, setTabState, isActive);
+            context.dispatch({
+              type: "CHANGE_ACTIVE_TAB",
+              payload: nextTabId,
+            });
+            context.dispatch({ type: "REMOVE_TAB", payload: id });
+            context.dispatch({ type: "CHECK_TABS_AND_TOGGLE_WELCOME_PAGE" });
           }}
         >
           <Icon icon={roundClose} width="1.25em" />

@@ -4,22 +4,15 @@ import WebView from "./WebView";
 import WelcomePage from "./WelcomePage/WelcomePage";
 
 const TabContent = (): ReactElement => {
-  const { tabState, setTabState } = useContext(TabContext);
-  const { tabs, activeTabId, welcomePageHidden } = tabState;
+  const context = useContext(TabContext);
+  const { tabs, activeTabId, welcomePageHidden } = context;
   const hasTabs = tabs.length > 0;
 
   useEffect(() => {
     if (hasTabs) {
-      setTabState(
-        (prevState: TabState): TabState => {
-          return {
-            ...prevState,
-            welcomePageHidden: true
-          };
-        }
-      );
+      context.dispatch({ type: "HIDE_WELCOME_PAGE" });
     }
-  }, []);
+  }, [activeTabId]);
 
   return (
     <div id="tab-content">

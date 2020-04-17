@@ -1,25 +1,36 @@
-import React, { createContext, ReactElement, useState } from "react";
+import React from "react";
+import tabStore from "../store/tabStore";
+import TabReducer from "./TabReducer";
 
-export const TabContext = createContext(undefined);
+export const TabContext = React.createContext(undefined);
 
-export const TabProvider = ({
-  children
-}: {
-  children: React.ReactNode;
-}): ReactElement => {
-  const initialTabState: TabState = {
-    tabs: [],
+export class TabProvider extends React.Component {
+  state: TabState = {
+    tabs: tabStore.get("tabs"),
     activeTabId: "",
     welcomePageHidden: false,
     tabModalOpen: false,
-    editTab: null
+    settingsModalOpen: false,
+    editTab: null,
+    dispatch: (action: Action) =>
+      this.setState((state) => TabReducer(state, action)),
   };
 
-  const [tabState, setTabState] = useState(initialTabState);
+  componentDidMount(): void {
+    // Set initial active tab
+    this.setState({
+      ...this.state,
+      activeTabId: (this.state.tabs[0] && this.state.tabs[0].id) || "",
+    });
+  }
 
-  return (
-    <TabContext.Provider value={{ tabState, setTabState }}>
-      {children}
-    </TabContext.Provider>
-  );
-};
+  render(): React.ReactElement {
+    return (
+      <TabContext.Provider value={this.state}>
+        {this.props.children}
+      </TabContext.Provider>
+    );
+  }
+}
+
+export const TabConsumer = TabContext.Consumer;

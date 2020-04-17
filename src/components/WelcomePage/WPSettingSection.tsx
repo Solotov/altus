@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useContext } from "react";
 import WelcomePageSection from "./WPSection";
 import Button from "../Button";
 import Toggle from "../Toggle";
@@ -6,8 +6,11 @@ import Icon from "@iconify/react";
 import baselineSettings from "@iconify/icons-ic/baseline-settings";
 import reloadOutlined from "@iconify/icons-ant-design/reload-outlined";
 import roundImportExport from "@iconify/icons-ic/round-import-export";
+import { TabContext } from "../../context/TabContext";
 
 const WelcomePageSettingSection = (): ReactElement => {
+  const context = useContext(TabContext);
+
   return (
     <WelcomePageSection title="Quick Settings" className="settings-section">
       <div className="quick-settings">
@@ -29,6 +32,9 @@ const WelcomePageSettingSection = (): ReactElement => {
           text="View All Settings"
           icon={<Icon icon={baselineSettings} />}
           isFluid={true}
+          onClick={(): void =>
+            context.dispatch({ type: "OPEN_SETTINGS_MODAL" })
+          }
         />
         <Button
           text="Reset Settings"

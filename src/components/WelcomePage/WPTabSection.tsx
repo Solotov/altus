@@ -5,11 +5,10 @@ import Tab from "../Tab";
 import Button from "../Button";
 import roundPlus from "@iconify/icons-ic/round-plus";
 import Icon from "@iconify/react";
-import openTabModal from "../../utils/openTabModal";
 
 const WelcomePageTabSection = (): ReactElement => {
-  const { tabState, setTabState } = useContext(TabContext);
-  const { tabs } = tabState;
+  const context = useContext(TabContext);
+  const { tabs } = context;
   const hasTabs = tabs.length > 0;
 
   return (
@@ -35,7 +34,7 @@ const WelcomePageTabSection = (): ReactElement => {
           <Button
             text="Add Tab"
             icon={<Icon icon={roundPlus} width="1.25rem" />}
-            onClick={(): void => openTabModal(setTabState)}
+            onClick={(): void => context.dispatch({ type: "OPEN_TAB_MODAL" })}
           />
         </div>
       )}

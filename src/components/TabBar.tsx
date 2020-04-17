@@ -4,11 +4,10 @@ import Dragula from "react-dragula";
 import { TabContext } from "../context/TabContext";
 import Icon from "@iconify/react";
 import roundPlus from "@iconify/icons-ic/round-plus";
-import openTabModal from "../utils/openTabModal";
 
 const TabBar = (): ReactElement => {
-  const { tabState, setTabState } = useContext(TabContext);
-  const { tabs } = tabState;
+  const context = useContext(TabContext);
+  const { tabs } = context;
 
   useEffect(() => {
     // Instantiate Dragula to enable dragging
@@ -23,7 +22,7 @@ const TabBar = (): ReactElement => {
         } else {
           return true;
         }
-      }
+      },
     });
   }, []);
 
@@ -43,7 +42,7 @@ const TabBar = (): ReactElement => {
         ))}
       <div
         className="tab new-tab"
-        onClick={(): void => openTabModal(setTabState)}
+        onClick={(): void => context.dispatch({ type: "OPEN_TAB_MODAL" })}
       >
         <Icon icon={roundPlus} width="1.5em" />
       </div>
