@@ -1,0 +1,70 @@
+.settings-modal {
+    ::-webkit-scrollbar {
+        width: 1.5%;
+        background: #3A4049;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background: rgba(0, 0, 0, 0.3);
+    }
+
+    .settings {
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+        padding: 0.25rem 0.65rem 0.25rem 0;
+        max-height: 47vh;
+    }
+
+    .setting {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 0.85rem 0;
+        border-bottom: 1px solid rgba(80, 80, 80, 0.25);
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        .info {
+            max-width: 85%;
+
+            .title {
+                font-weight: 600;
+                font-size: 1.25rem;
+                margin-bottom: 0.35rem;
+            }
+
+            .description {
+                font-weight: 300;
+                font-size: 1rem;
+            }
+        }
+    }
+
+    .footer {
+        display: flex;
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: 0.5rem;
+
+        .button {
+            background: #1779e9;
+            color: #fff;
+            padding: .6rem 1.15rem;
+
+            &:hover {
+                background: #0759b8;
+            }
+
+            .text {
+                font-size: 1.1rem;
+                font-weight: 550;
+            }
+        }
+    }
+}
