@@ -2,14 +2,12 @@ import { remote } from "electron";
 
 const ses = remote.session.defaultSession;
 
-console.log("hello");
-
 ses.flushStorageData();
 ses.clearStorageData({
-  storages: ["appcache", "serviceworkers", "cachestorage", "websql", "indexdb"]
+  storages: ["appcache", "serviceworkers", "cachestorage", "websql", "indexdb"],
 });
 
-window.navigator.serviceWorker.getRegistrations().then(registrations => {
+window.navigator.serviceWorker.getRegistrations().then((registrations) => {
   for (const registration of registrations) {
     registration.unregister();
   }
