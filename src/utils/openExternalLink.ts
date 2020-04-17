@@ -1,5 +1,7 @@
+import { ipcRenderer } from "electron";
+
 const openExternalLink = (link: string): void => {
-  (window as any).ipcRenderer.send("open-link", link);
+  ipcRenderer.send("open-link", link);
 };
 
 export default openExternalLink;
