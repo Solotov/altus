@@ -1,7 +1,7 @@
 declare module "eva-icons";
 
 declare module "react-dragula" {
-  export default function(
+  export default function (
     containers: Array<HTMLElement>,
     options: import("dragula").DragulaOptions
   ): import("dragula").Drake;
@@ -31,5 +31,12 @@ interface TabState {
   activeTabId: string | "";
   welcomePageHidden: boolean;
   tabModalOpen: boolean;
+  settingsModalOpen: boolean;
   editTab: TabObject | null;
+  dispatch: Function;
 }
+
+type Action = {
+  type: string;
+  payload: any;
+};
